@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import { store } from "@/store"
+import { reactive, toRefs } from 'vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/index',
@@ -42,11 +43,11 @@ const canUserAccess = (to: RouteLocationNormalized) => {
 }
 
 router.beforeEach(async (to, from, next) => {
-  const { token, userInfo } = store.state;
-  if (token && !userInfo) {
+  if (store.state.token && !store.state.userInfo) {
     await store.dispatch("getUserInfo");
   }
-  if (userInfo && ["Login", "Register"].includes(to.name as string)) {
+
+  if (store.state.userInfo && ["Login", "Register"].includes(to.name as string)) {
     next({ name: 'Index', replace: true })
     return;
   }
