@@ -1,2 +1,3 @@
 # dongmanbu-wap
-初学vue3 冲！
+
+动漫部-Let's Go! We're Alright!
