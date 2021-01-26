@@ -42,15 +42,16 @@ const canUserAccess = (to: RouteLocationNormalized) => {
 }
 
 router.beforeEach(async (to, from, next) => {
-  if (store.state.token && !store.state.userInfo) {
+  const { token, userInfo } = store.state;
+  if (token && !userInfo) {
     await store.dispatch("getUserInfo");
   }
-  if (["Login", "Register"].includes(to.name as string)) {
-    next({ name: 'Index' })
+  if (userInfo && ["Login", "Register"].includes(to.name as string)) {
+    next({ name: 'Index', replace: true })
     return;
   }
   const isAuthenticated = canUserAccess(to);
-  if (!isAuthenticated) next({ name: 'Register' })
+  if (!isAuthenticated) next({ name: 'Register', replace: true })
   else next()
 })
 
