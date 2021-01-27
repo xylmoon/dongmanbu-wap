@@ -1,7 +1,7 @@
 import { indexService, VideoInfo } from "@/service";
 import { computed, onMounted, ref, watch } from "vue";
 import moment from "moment"
-export default function useVideoRepositories() {
+export function useVideoRepositories() {
   const repositories = ref<VideoInfo[]>([]);
   const getVideoRepositories = async () => {
     try {

@@ -4,18 +4,25 @@ import { reactive, toRefs } from 'vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/index',
+    alias: '/',
     name: 'Index',
     component: () => import('../views/Index.vue')
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: () => import('../views/Login.vue'),
+    meta: {
+      hideHeader: true
+    }
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('../views/Register.vue')
+    component: () => import('../views/Register.vue'),
+    meta: {
+      hideHeader: true
+    }
   },
   {
     path: '/video/:id',
@@ -46,7 +53,6 @@ router.beforeEach(async (to, from, next) => {
   if (store.state.token && !store.state.userInfo) {
     await store.dispatch("getUserInfo");
   }
-
   if (store.state.userInfo && ["Login", "Register"].includes(to.name as string)) {
     next({ name: 'Index', replace: true })
     return;

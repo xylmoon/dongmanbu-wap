@@ -5,6 +5,7 @@ import { userService } from "@/service"
 export interface State {
   token: string | null;
   userInfo: {
+    nickname: string;
     avatar: string
     bio: string
     email: string

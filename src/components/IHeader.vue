@@ -1,75 +1,90 @@
 <template>
-  <template v-if="userInfo">
-    <div class="header">
-      <van-nav-bar placeholder fixed @click-left="show = true">
-        <template #left>
-          <van-image
-            round
-            width="0.6rem"
-            height="0.6rem"
-            :src="avatarUrl"
-            fit="cover"
-          />
-          <div class="nickname"><i></i> {{ userInfo.email }}</div>
-        </template>
-      </van-nav-bar>
-    </div>
-    <van-popup
-      v-model:show="show"
-      position="left"
-      round
-      :style="{ width: '80%', height: '100%' }"
-    >
-      <div class="popup">
-        <div class="userinfo">
-          <van-image
-            round
-            width="1.6rem"
-            height="1.6rem"
-            :src="avatarUrl"
-            fit="cover"
-            class="avatar"
-          />
-          <div class="content">
-            <div class="nickname">请给我一碗蛋炒饭,</div>
-            <div class="email">{{ userInfo.email }}</div>
-            <div class="bio">{{ userInfo.bio }}</div>
-          </div>
-        </div>
-        <van-cell-group>
-          <van-cell title="我要发布" is-link to="index" size="large" />
-          <van-cell title="我已发布" is-link to="index" size="large" />
-        </van-cell-group>
-        <div class="logout">
-          <van-button
-            color="linear-gradient(to right, #ff6034, #ee0a24)"
-            round
-            block
-          >
-            登出
-          </van-button>
-          <div class="copyright">Demo作者微信:xylmoon</div>
+  <div class="header" v-show="!hideHeader">
+    <van-nav-bar placeholder fixed @click-left="navClick">
+      <template #left>
+        <van-image
+          round
+          width="0.6rem"
+          height="0.6rem"
+          :src="avatarUrl"
+          fit="cover"
+        />
+        <div class="nickname"><i></i> {{ userInfo?.nickname || "请登录" }}</div>
+      </template>
+    </van-nav-bar>
+  </div>
+  <van-popup
+    v-if="userInfo"
+    v-model:show="showPopup"
+    position="left"
+    round
+    :style="{ width: '80%', height: '100%' }"
+  >
+    <div class="popup">
+      <div class="userinfo">
+        <van-image
+          round
+          width="1.6rem"
+          height="1.6rem"
+          :src="avatarUrl"
+          fit="cover"
+          class="avatar"
+        />
+        <div class="content">
+          <div class="nickname">{{ userInfo.nickname }}</div>
+          <div class="email">{{ userInfo.email }}</div>
+          <div class="bio">{{ userInfo.bio }}</div>
         </div>
       </div>
-    </van-popup>
-  </template>
+      <van-cell-group>
+        <van-cell title="我要发布" is-link to="index" size="large" />
+        <van-cell title="我已发布" is-link to="index" size="large" />
+      </van-cell-group>
+      <div class="logout">
+        <van-button
+          color="linear-gradient(to right, #ff6034, #ee0a24)"
+          round
+          block
+        >
+          登出
+        </van-button>
+        <div class="copyright">Demo作者微信:xylmoon</div>
+      </div>
+    </div>
+  </van-popup>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store";
+import { useRoute, useRouter } from "vue-router";
 export default defineComponent({
   name: "IHeader",
   setup() {
+    const router = useRouter();
+    const route = useRoute();
     const store = useStore();
     const avatarUrl = ref(
       "https://pic.dongmanbu.cn/image/20190330/155391373196429381f30e924b89957bb5c1660061d950a7bf61d.jpg"
     );
-    const show = ref(false);
+    const showPopup = ref(false);
+    const userInfo = computed(() => store.state.userInfo);
+    const hideHeader = computed(() => route.meta.hideHeader);
+    const navClick = () => {
+      if (userInfo.value) {
+        showPopup.value = true;
+        return;
+      }
+      router.push({
+        name: "Login",
+      });
+    };
     return {
-      userInfo: computed(() => store.state.userInfo),
+      hideHeader,
+      navClick,
+      userInfo,
       avatarUrl,
-      show,
+      showPopup,
     };
   },
 });

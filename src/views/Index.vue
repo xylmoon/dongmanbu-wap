@@ -1,11 +1,15 @@
 <template>
   <van-swipe :autoplay="3000" indicator-color="white">
-    <van-swipe-item v-for="banner in banners" :key="banner._id">
+    <van-swipe-item v-for="banner in banners" :key="banner._id" @click="toDetailPage(banner._id)">
       <van-image height="3rem" fit="cover" :src="banner.cover" />
     </van-swipe-item>
   </van-swipe>
   <van-grid :border="false" :gutter="0" :column-num="3" :center="false">
-    <van-grid-item v-for="item in rcmd" :key="item._id" class="">
+    <van-grid-item
+      v-for="item in rcmd"
+      :key="item._id"
+      @click="toDetailPage(item._id)"
+    >
       <div class="img-box">
         <van-image height="3rem" fit="cover" :src="item.cover" />
         <div class="count">
@@ -17,7 +21,6 @@
           </i>
         </div>
       </div>
-
       <div class="title van-multi-ellipsis--l2">
         {{ item.title }}
       </div>
@@ -26,19 +29,30 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import useVideoRepositories from "@/composables/useVideoRepositories";
+import { useVideoRepositories } from "@/composables";
+import { useRouter } from "vue-router";
 export default defineComponent({
   name: "Index",
   setup() {
+    const router = useRouter();
     const {
       banners,
       recommend: rcmd,
       getVideoRepositories,
     } = useVideoRepositories();
+    const toDetailPage = (id: string) => {
+      router.push({
+        name: "Video",
+        params: {
+          id,
+        },
+      });
+    };
     return {
       banners,
       rcmd,
       getVideoRepositories,
+      toDetailPage,
     };
   },
 });

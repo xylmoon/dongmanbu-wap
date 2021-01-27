@@ -1,7 +1,8 @@
 import { api } from '@/util/axios';
 export interface VideoInfo {
   author: string;
-  banner: string;
+  banner?: string;
+  biliurl:string;
   cover: string;
   createTime: string;
   desc: string;
